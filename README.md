@@ -53,11 +53,8 @@ blog_django/
 ### 1. Clonar el repositorio
 
 ```powershell
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/EthanTony/-Preentrega_7_Coder
 ```
-
-> El marcador `<URL_DEL_REPOSITORIO>` se reemplazará por la URL definitiva
-> cuando el repositorio remoto esté publicado.
 
 ### 2. Acceder al directorio del proyecto
 
