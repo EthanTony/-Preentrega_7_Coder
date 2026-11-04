@@ -1,12 +1,10 @@
-# Blog Django
+# Preentrega 8 – Blog Django
 
 ## Descripción
 
-Blog web desarrollado con Django como proyecto final del curso de Python. La
-aplicación permite a las personas registrarse, iniciar sesión y publicar
-contenido con texto e imágenes opcionales. Incluye un listado público de
-publicaciones, búsqueda por título y contenido, y gestión completa de cada
-publicación por parte de su autor o del personal del sitio.
+Blog web desarrollado con Django como parte del proyecto final del curso de Python Coderhouse. La aplicación permite a las personas registrarse, iniciar sesión y publicar contenido con texto e imágenes opcionales.
+
+Incluye un listado público de publicaciones, búsqueda por título y contenido, y gestión completa de cada publicación por parte de su autor o del personal del sitio.
 
 ## Tecnologías
 
@@ -80,51 +78,52 @@ blog_django/
 
 ### 1. Clonar el repositorio
 
-```powershell
-git clone https://github.com/EthanTony/-Preentrega_7_Coder
-cd blog_django
+```bash
+git clone https://github.com/EthanTony/Preentrega_8_Coder.git
+cd Preentrega_8_Coder
 ```
 
 ### 2. Crear y activar el entorno virtual
 
-Windows PowerShell:
+**Windows PowerShell:**
 
 ```powershell
 python -m venv .venv
-.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```
 
-Linux/macOS:
+**Linux/macOS:**
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-> Si PowerShell bloquea la activación por la política de ejecución, se puede
-> habilitar temporalmente solo para la sesión actual con
-> `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`.
+Si PowerShell bloquea la activación por la política de ejecución, se puede habilitar temporalmente para la sesión actual con:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
 
 ### 3. Instalar las dependencias
 
-```powershell
+```bash
 python -m pip install -r requirements.txt
 ```
 
 ## Configuración de variables de entorno
 
-El proyecto lee `SECRET_KEY`, `DEBUG` y `ALLOWED_HOSTS` desde un archivo `.env`
-utilizando `python-decouple`.
+El proyecto lee `SECRET_KEY`, `DEBUG` y `ALLOWED_HOSTS` desde un archivo `.env` utilizando `python-decouple`.
 
-1. Copiar el archivo de ejemplo:
+1. Copiar el archivo de ejemplo.
 
-   Windows PowerShell:
+   **Windows PowerShell:**
 
    ```powershell
    Copy-Item .env.example .env
    ```
 
-   Linux/macOS:
+   **Linux/macOS:**
 
    ```bash
    cp .env.example .env
@@ -132,7 +131,7 @@ utilizando `python-decouple`.
 
 2. Generar una `SECRET_KEY` nueva:
 
-   ```powershell
+   ```bash
    python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
    ```
 
@@ -144,21 +143,19 @@ utilizando `python-decouple`.
    ALLOWED_HOSTS=127.0.0.1,localhost
    ```
 
-> El archivo `.env` contiene credenciales locales y está excluido de Git.
-> Nunca se debe publicar. El archivo `.env.example` sí se versiona y no contiene
-> secretos reales.
+El archivo `.env` contiene credenciales locales y está excluido de Git. Nunca debe publicarse. El archivo `.env.example` sí se versiona y no contiene secretos reales.
 
 ## Migraciones
 
 Aplicar las migraciones de Django y de la aplicación `posts`:
 
-```powershell
+```bash
 python manage.py migrate
 ```
 
 Comprobar que no existan cambios de modelo pendientes:
 
-```powershell
+```bash
 python manage.py makemigrations --check --dry-run
 ```
 
@@ -166,42 +163,39 @@ python manage.py makemigrations --check --dry-run
 
 Para acceder al panel de administración:
 
-```powershell
+```bash
 python manage.py createsuperuser
 ```
 
-Luego iniciar sesión en `http://127.0.0.1:8000/admin/`.
+Posteriormente, iniciar sesión en:
+
+`http://127.0.0.1:8000/admin/`
 
 ## Ejecutar el servidor
 
-```powershell
+```bash
 python manage.py runserver
 ```
 
 La aplicación estará disponible en:
 
 - Blog: `http://127.0.0.1:8000/`
-- Administración: `http://127.0.0.1:8000/admin/`<
+- Administración: `http://127.0.0.1:8000/admin/`
 - Login: `http://127.0.0.1:8000/accounts/login/`
 - Registro: `http://127.0.0.1:8000/accounts/register/`
 
-Durante `DEBUG=True`, Django sirve los archivos multimedia subidos desde
-`MEDIA_ROOT`. En producción se debe configurar un servidor web o de archivos
-para servir `MEDIA_ROOT` y `STATIC_ROOT`.
+Durante `DEBUG=True`, Django sirve los archivos multimedia subidos desde `MEDIA_ROOT`. En producción se debe configurar un servidor web o de archivos para servir `MEDIA_ROOT` y `STATIC_ROOT`.
 
 ## Ejecutar las pruebas
 
-```powershell
+```bash
 python manage.py check
 python manage.py test
 ```
 
-Las pruebas cubren modelos, listado, detalle, búsqueda, creación, edición,
-eliminación, permisos de autoría, autenticación, imágenes y publicaciones sin
-imagen.
+Las pruebas cubren modelos, listado, detalle, búsqueda, creación, edición, eliminación, permisos de autoría, autenticación, imágenes y publicaciones sin imagen.
 
 ## Rutas principales
-
 
 | Ruta | Descripción |
 |---|---|
@@ -219,7 +213,7 @@ imagen.
 
 ```powershell
 python -m venv .venv
-.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 Copy-Item .env.example .env
 # Editar .env con una SECRET_KEY nueva
