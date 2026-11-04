@@ -10,10 +10,24 @@ __pycache__/
 # Variables de entorno
 .env
 .env.*
+!.env.example
 
 # Base de datos local
 db.sqlite3
 db.sqlite3-journal
+*.sqlite3
+
+# Archivos subidos y generados
+media/
+staticfiles/
+*.log
+*.bak
+*.tmp
+
+# Pruebas y cobertura
+.pytest_cache/
+.coverage
+htmlcov/
 
 # Archivos del sistema
 .DS_Store

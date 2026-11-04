@@ -1,51 +1,79 @@
-# Preentrega 7 - Repositorio base de Django
+# Blog Django
 
 ## Descripción
 
-Este repositorio contiene la estructura inicial de un proyecto web para un blog
-desarrollado con Django. Corresponde a la Preentrega 7 de Coderhouse y establece
-la base técnica del proyecto: la configuración del proyecto `blog_project`, la
-creación de la aplicación `posts` y los archivos necesarios para su instalación,
-ejecución y control de versiones.
-
-En esta entrega no se implementan modelos, vistas, templates, formularios ni
-ninguna otra funcionalidad del blog. El alcance se limita a dejar un proyecto
-Django limpio y funcional.
+Blog web desarrollado con Django como proyecto final del curso de Python. La
+aplicación permite a las personas registrarse, iniciar sesión y publicar
+contenido con texto e imágenes opcionales. Incluye un listado público de
+publicaciones, búsqueda por título y contenido, y gestión completa de cada
+publicación por parte de su autor o del personal del sitio.
 
 ## Tecnologías
 
-- Python 3.14
+- Python 3.14.7
 - Django 5.2.18 (LTS)
-- Git
-- GitHub
+- SQLite
+- Pillow 13.0.0
+- python-decouple 3.8
+- Bootstrap 5.3.3 (CDN)
+- HTML5, CSS3 y JavaScript
+- Git y GitHub
+
+## Funcionalidades
+
+- Listado público de publicaciones con paginación.
+- Vista de detalle de cada publicación.
+- Creación, edición y eliminación de publicaciones.
+- Carga opcional de imágenes para las publicaciones.
+- Publicaciones sin imagen con visualización controlada.
+- Registro de usuarios mediante `UserCreationForm`.
+- Inicio y cierre de sesión (el cierre de sesión se realiza por `POST`).
+- Restricción de creación, edición y eliminación según autenticación y autoría.
+- El autor de una publicación o un miembro del staff puede editarla o eliminarla.
+- Búsqueda por título y contenido con `Q` e `icontains`.
+- Mensaje cuando la búsqueda no encuentra coincidencias.
+- Navegación y acciones que cambian según el usuario autenticado.
+- Panel de administración con el modelo `Post` registrado.
+- Interfaz responsiva con Bootstrap 5 y estilos propios.
+- Mensajes de confirmación y error.
+
+## Requisitos previos
+
+- Python 3.14 (versión probada: 3.14.7).
+- Git.
+- PowerShell en Windows o una terminal en Linux/macOS.
 
 ## Estructura del proyecto
 
 ```text
 blog_django/
-│
-├── .venv/                  # Entorno virtual local (no se versiona)
+├── .env.example
+├── .gitignore
+├── README.md
 ├── manage.py
 ├── requirements.txt
-├── README.md
-├── .gitignore
-│
 ├── blog_project/
-│   ├── __init__.py
 │   ├── asgi.py
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-│
-└── posts/
-    ├── __init__.py
-    ├── admin.py
-    ├── apps.py
-    ├── migrations/
-    │   └── __init__.py
-    ├── models.py
-    ├── tests.py
-    └── views.py
+├── posts/
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── migrations/
+│   │   └── 0001_initial.py
+│   ├── models.py
+│   ├── templates/posts/
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── static/css/styles.css
+└── templates/
+    ├── 403.html
+    ├── base.html
+    ├── partials/
+    └── registration/
 ```
 
 ## Instalación
@@ -54,97 +82,167 @@ blog_django/
 
 ```powershell
 git clone https://github.com/EthanTony/-Preentrega_7_Coder
-```
-
-### 2. Acceder al directorio del proyecto
-
-```powershell
 cd blog_django
 ```
 
-### 3. Crear el entorno virtual
+### 2. Crear y activar el entorno virtual
 
 Windows PowerShell:
 
 ```powershell
 python -m venv .venv
-```
-
-Linux/macOS:
-
-```bash
-python3 -m venv .venv
-```
-
-### 4. Activar el entorno virtual
-
-Windows PowerShell:
-
-```powershell
 .venv\Scripts\Activate.ps1
 ```
 
 Linux/macOS:
 
 ```bash
+python3 -m venv .venv
 source .venv/bin/activate
 ```
 
 > Si PowerShell bloquea la activación por la política de ejecución, se puede
 > habilitar temporalmente solo para la sesión actual con
-> `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. Esto no modifica
-> la configuración global del sistema.
+> `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`.
 
-### 5. Instalar las dependencias
+### 3. Instalar las dependencias
 
 ```powershell
 python -m pip install -r requirements.txt
 ```
 
-### 6. Ejecutar las migraciones
+## Configuración de variables de entorno
+
+El proyecto lee `SECRET_KEY`, `DEBUG` y `ALLOWED_HOSTS` desde un archivo `.env`
+utilizando `python-decouple`.
+
+1. Copiar el archivo de ejemplo:
+
+   Windows PowerShell:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+   Linux/macOS:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Generar una `SECRET_KEY` nueva:
+
+   ```powershell
+   python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+   ```
+
+3. Editar `.env` y reemplazar el valor de `SECRET_KEY` por la clave generada:
+
+   ```env
+   SECRET_KEY=tu-clave-generada
+   DEBUG=True
+   ALLOWED_HOSTS=127.0.0.1,localhost
+   ```
+
+> El archivo `.env` contiene credenciales locales y está excluido de Git.
+> Nunca se debe publicar. El archivo `.env.example` sí se versiona y no contiene
+> secretos reales.
+
+## Migraciones
+
+Aplicar las migraciones de Django y de la aplicación `posts`:
 
 ```powershell
 python manage.py migrate
 ```
 
-### 7. Iniciar el servidor de desarrollo
+Comprobar que no existan cambios de modelo pendientes:
+
+```powershell
+python manage.py makemigrations --check --dry-run
+```
+
+## Crear un superusuario
+
+Para acceder al panel de administración:
+
+```powershell
+python manage.py createsuperuser
+```
+
+Luego iniciar sesión en `http://127.0.0.1:8000/admin/`.
+
+## Ejecutar el servidor
 
 ```powershell
 python manage.py runserver
 ```
 
-El servidor estará disponible en:
+La aplicación estará disponible en:
 
-`http://127.0.0.1:8000/`
+- Blog: `http://127.0.0.1:8000/`
+- Administración: `http://127.0.0.1:8000/admin/`<
+- Login: `http://127.0.0.1:8000/accounts/login/`
+- Registro: `http://127.0.0.1:8000/accounts/register/`
 
-Para detenerlo, presionar `Ctrl + C`.
+Durante `DEBUG=True`, Django sirve los archivos multimedia subidos desde
+`MEDIA_ROOT`. En producción se debe configurar un servidor web o de archivos
+para servir `MEDIA_ROOT` y `STATIC_ROOT`.
 
-### Comandos completos para Windows PowerShell
+## Ejecutar las pruebas
+
+```powershell
+python manage.py check
+python manage.py test
+```
+
+Las pruebas cubren modelos, listado, detalle, búsqueda, creación, edición,
+eliminación, permisos de autoría, autenticación, imágenes y publicaciones sin
+imagen.
+
+## Rutas principales
+
+
+| Ruta | Descripción |
+|---|---|
+| `/` | Listado de publicaciones |
+| `/posts/new/` | Crear publicación (requiere login) |
+| `/posts/<id>/` | Detalle de publicación |
+| `/posts/<id>/edit/` | Editar publicación (autor o staff) |
+| `/posts/<id>/delete/` | Eliminar publicación (autor o staff) |
+| `/accounts/register/` | Registro de usuario |
+| `/accounts/login/` | Inicio de sesión |
+| `/accounts/logout/` | Cierre de sesión por POST |
+| `/admin/` | Panel de administración |
+
+## Comandos completos para Windows PowerShell
 
 ```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+# Editar .env con una SECRET_KEY nueva
 python manage.py migrate
+python manage.py createsuperuser
 python manage.py runserver
 ```
 
-### Comandos completos para Linux/macOS
+## Comandos completos para Linux/macOS
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
+cp .env.example .env
+# Editar .env con una SECRET_KEY nueva
 python manage.py migrate
+python manage.py createsuperuser
 python manage.py runserver
 ```
 
-## Aplicación posts
+## Autor
 
-`posts` es la aplicación destinada a alojar posteriormente los componentes
-relacionados con las publicaciones del blog, como modelos, vistas, formularios y
-templates.
+**Bruno Antonio Aguilar Hernández**
 
-En esta entrega solamente se crea y se registra la aplicación en
-`INSTALLED_APPS` mediante `posts.apps.PostsConfig`. Todavía no se implementa
-ninguna funcionalidad.
+Proyecto final del curso de Python.

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar sesión · Blog Django{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4 p-lg-5">
+                <h1 class="h3 mb-2">Iniciar sesión</h1>
+                <p class="text-secondary mb-4">Accede para crear y gestionar tus publicaciones.</p>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Usuario o contraseña incorrectos. Inténtalo de nuevo.
+                    </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include "partials/form_fields.html" %}
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <button type="submit" class="btn btn-primary w-100 mt-2">Entrar</button>
+                </form>
+
+                <hr class="my-4">
+                <p class="text-center text-secondary mb-0">
+                    ¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

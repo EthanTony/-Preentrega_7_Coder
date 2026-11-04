@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Editar publicación{% else %}Nueva publicación{% endif %} · Blog Django{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4 p-lg-5">
+                <h1 class="h3 mb-2">
+                    {% if object %}Editar publicación{% else %}Nueva publicación{% endif %}
+                </h1>
+                <p class="text-secondary mb-4">
+                    {% if object %}
+                        Actualiza el título, el contenido o la imagen de tu publicación.
+                    {% else %}
+                        Comparte una idea con la comunidad. La imagen es opcional.
+                    {% endif %}
+                </p>
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    {% include "partials/form_fields.html" %}
+
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary px-4">Guardar publicación</button>
+                        <a href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'posts:post_list' %}{% endif %}"
+                           class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

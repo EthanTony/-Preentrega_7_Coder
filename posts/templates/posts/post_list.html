@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Publicaciones · Blog Django{% endblock %}
+
+{% block content %}
+<section class="hero p-4 p-md-5 mb-4 mb-lg-5">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <p class="text-uppercase hero-kicker mb-2">Blog de la comunidad</p>
+            <h1 class="display-5 fw-bold mb-3">Ideas, historias y conocimiento</h1>
+            <p class="lead text-white-50 mb-4">
+                Un espacio para compartir publicaciones, aprender y conversar.
+                Crea tu cuenta y publica tus propias ideas.
+            </p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'posts:post_create' %}" class="btn btn-light btn-lg px-4">Crear publicación</a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4 me-2">Crear cuenta</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4">Iniciar sesión</a>
+            {% endif %}
+        </div>
+        <div class="col-lg-5">
+            <form method="get" action="{% url 'posts:post_list' %}" class="card border-0 shadow-lg search-card">
+                <div class="card-body p-4">
+                    <h2 class="h5 mb-3">Buscar publicaciones</h2>
+                    <div class="input-group">
+                        {{ search_form.q }}
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </div>
+                    <p class="form-text mb-0 mt-2">Busca coincidencias en el título y el contenido.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h2 class="h4 mb-0">
+        {% if query %}
+            Resultados para «{{ query }}»
+        {% else %}
+            Últimas publicaciones
+        {% endif %}
+    </h2>
+    <span class="text-secondary small">
+        {{ page_obj.paginator.count }} publicación{{ page_obj.paginator.count|pluralize }}
+    </span>
+</div>
+
+{% if posts %}
+    <div class="row g-4">
+        {% for post in posts %}
+            <div class="col-md-6 col-xl-4">
+                <article class="card h-100 shadow-sm post-card">
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="card-img-top post-card-image"
+                             alt="Imagen de {{ post.title }}" loading="lazy">
+                    {% else %}
+                        <div class="card-img-top post-card-placeholder d-flex align-items-center justify-content-center">
+                            <span>Sin imagen</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h3 class="h5 card-title mb-2">{{ post.title }}</h3>
+                        <p class="text-secondary small mb-2">
+                            Por <strong>{{ post.author.username }}</strong>
+                            · {{ post.created_at|date:"d M Y" }}
+                        </p>
+                        <p class="card-text text-secondary flex-grow-1">
+                            {{ post.content|truncatewords:24 }}
+                        </p>
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-sm btn-primary">Leer más</a>
+                            {% if user.is_authenticated and user == post.author or user.is_staff %}
+                                <a href="{% url 'posts:post_update' post.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <a href="{% url 'posts:post_delete' post.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% include "partials/pagination.html" %}
+{% else %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5 px-4">
+            {% if query %}
+                <h3 class="h5">No se encontraron publicaciones</h3>
+                <p class="text-secondary mb-4">
+                    No hay resultados para «<strong>{{ query }}</strong>». Prueba con otras palabras.
+                </p>
+                <a href="{% url 'posts:post_list' %}" class="btn btn-outline-secondary">Ver todas las publicaciones</a>
+            {% else %}
+                <h3 class="h5">Todavía no hay publicaciones</h3>
+                <p class="text-secondary mb-4">Sé la primera persona en compartir una idea.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'posts:post_create' %}" class="btn btn-primary">Crear la primera publicación</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión para publicar</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

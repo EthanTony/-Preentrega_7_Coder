@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Acceso denegado · Blog Django{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm text-center">
+            <div class="card-body p-5">
+                <p class="display-4 fw-bold text-danger mb-2">403</p>
+                <h1 class="h3 mb-3">No tienes permiso para realizar esta acción</h1>
+                <p class="text-secondary mb-4">
+                    Solo el autor de la publicación o un administrador pueden editarla o eliminarla.
+                </p>
+                <a href="{% url 'posts:post_list' %}" class="btn btn-primary">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
